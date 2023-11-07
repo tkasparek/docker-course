@@ -1,0 +1,9 @@
+from ubuntu
+
+COPY hello.py /app/
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y python3 && apt-get clean
+
+ENTRYPOINT /app/hello.py

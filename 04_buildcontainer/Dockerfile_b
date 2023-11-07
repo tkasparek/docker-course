@@ -1,0 +1,31 @@
+FROM ubuntu:latest
+
+# Install Rust and Cargo
+RUN apt-get update && \
+    apt-get install -y curl gcc && \
+    apt-get clean
+
+RUN adduser --home /app azdo
+
+USER azdo
+
+WORKDIR /app
+
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+    echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.bashrc && \
+    /bin/bash -c "source ~/.bashrc"
+
+# Set the Rust toolchain to nightly
+RUN /app/.cargo/bin/rustup override set nightly
+
+# Copy the source code into the container
+COPY src/ src/
+COPY Cargo.toml Cargo.toml
+
+# Build the Rust application
+RUN /app/.cargo/bin/cargo build --release
+
+EXPOSE 8000
+
+# Set the entrypoint to the built binary
+CMD ["./target/release/buildcontainer"]
