@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+    app:
+        build:
+            dockerfile: Dockerfile_app
+        container_name: compose_app
+        environment:
+            POSTGRES_USER: demouser
+            POSTGRES_PASSWORD: demopwd
+            POSTGRES_HOST: db
+            POSTGRES_DB: demodb
+        depends_on:
+            - db
+        ports:
+            - "8000:8000"
+        restart: unless-stopped
+
+    db:
+        build:
+            dockerfile: Dockerfile_db
+        container_name: compose_db
+        environment:
+            POSTGRES_PASSWORD: "12345"
+        ports:
+            - "5432:5432"
+        restart: unless-stopped
